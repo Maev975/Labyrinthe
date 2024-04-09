@@ -108,17 +108,17 @@ class Labyrinthe{
 
     public static Labyrinthe chargerLabyrinthe(String nom) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(nom));
-        String line;
-        int numRows = 0;
-        int numCols = 0;
+        String ligne;
+        int numL = 0;
+        int numC = 0;
         boolean[][] murs = null;
         Personnage personnage = null;
         Sortie sortie = null;
 
 
-        while ((line = reader.readLine()) != null) {
-            numRows++;
-            numCols = line.length();
+        while ((ligne = reader.readLine()) != null) {
+            numL++;
+            numC = ligne.length();
         }
         reader.close();
 
@@ -126,12 +126,12 @@ class Labyrinthe{
         reader = new BufferedReader(new FileReader(nom));
 
 
-        murs = new boolean[numRows][numCols];
+        murs = new boolean[numL][numC];
 
 
-        for (int i = 0; (line = reader.readLine()) != null; i++) {
-            for (int j = 0; j < numCols; j++) {
-                char symbol = line.charAt(j);
+        for (int i = 0; (ligne = reader.readLine()) != null; i++) {
+            for (int j = 0; j < numC; j++) {
+                char symbol = ligne.charAt(j);
                 if (symbol == MUR) {
                     murs[i][j] = true;
                 } else if (symbol == PJ) {
@@ -153,4 +153,3 @@ class Labyrinthe{
 
 
 }
-
