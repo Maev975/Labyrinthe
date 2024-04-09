@@ -60,16 +60,14 @@ class Labyrinthe{
             return;
         }
 
-        while (!murs[suivant[0]][suivant[1]]) {
+        while (murs[suivant[0]][suivant[1]]== false) {
             if (suivant[0] == sortie.getX() && suivant[1] == sortie.getY()) {
                 personnage.setX(suivant[0]);
                 personnage.setY(suivant[1]);
-                return; // Sortie de la méthode
+                return;
             }
-
             personnage.setX(suivant[0]);
             personnage.setY(suivant[1]);
-
             try {
                 suivant = getSuivant(personnage.getX(), personnage.getY(), action);
             } catch (ActionInconnueException e) {
@@ -81,90 +79,81 @@ class Labyrinthe{
 
 
 
+
+
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        String s = "";
 
         for (int i = 0; i < murs.length; i++) {
             for (int j = 0; j < murs[i].length; j++) {
-                sb.append(getChar(i, j));
+                s += getChar(i, j);
             }
-            sb.append("\n");
+            s += "\n";
         }
-
-        return sb.toString();
+        return s;
     }
 
 
 
     public boolean etreFini() {
+        boolean res;
         if (personnage.getX() == sortie.getX() && personnage.getY() == sortie.getY()) {
-            return true;
+            res= true;
         } else {
-            return false;
+            res = false;
         }
+        return res;
     }
 
 
 
     public static Labyrinthe chargerLabyrinthe(String nom) throws IOException, FichierIncorrectException {
-        BufferedReader reader = new BufferedReader(new FileReader(nom));
+        FileReader fr = new FileReader(nom);
+        BufferedReader bf = new BufferedReader(fr);
 
-        // Lecture du nombre de lignes et de colonnes du labyrinthe
-        int numLignes = Integer.parseInt(reader.readLine());
-        int numColonnes = Integer.parseInt(reader.readLine());
 
-        // Initialisation des attributs du labyrinthe
-        boolean[][] murs = new boolean[numLignes][numColonnes];
-        Personnage personnage = null;
-        Sortie sortie = null;
+        String numLs = bf.readLine();
+        String numCs = bf.readLine();
+        int numL = Integer.parseInt(numLs);
+        int numC = Integer.parseInt(numCs);
 
-        // Lecture du descriptif du labyrinthe
-        for (int i = 0; i < numLignes; i++) {
-            String line = reader.readLine();
-            if (line == null || line.length() != numColonnes) {
+        Labyrinthe laby = new Labyrinthe();
+        laby.murs = new boolean[numL][numC];
+
+        for (int i = 0; i < numL; i++) {
+            String lActu = bf.readLine();
+            if (lActu == null || lActu.length() != numC) {
                 throw new FichierIncorrectException("nbColonnes ne correspond pas");
             }
-            for (int j = 0; j < numColonnes; j++) {
-                char symbole = line.charAt(j);
-                switch (symbole) {
-                    case MUR:
-                        murs[i][j] = true;
-                        break;
-                    case PJ:
-                        if (personnage != null) {
-                            throw new FichierIncorrectException("plusieurs personnages");
-                        }
-                        personnage = new Personnage(i, j);
-                        break;
-                    case SORTIE:
-                        if (sortie != null) {
-                            throw new FichierIncorrectException("plusieurs sorties");
-                        }
-                        sortie = new Sortie(i, j);
-                        break;
-                    case VIDE:
-                        // Aucune action nécessaire
-                        break;
-                    default:
-                        throw new FichierIncorrectException("caractere inconnu <" + symbole + ">");
+            for (int j = 0; j < numC; j++) {
+                char c = lActu.charAt(j);
+                if (c== MUR) {
+                    laby.murs[i][j] = true;
+                } else if (c== PJ) {
+                    if (laby.personnage != null) {
+                        throw new FichierIncorrectException("plusieurs personnages");
+                    }
+                    laby.personnage= new Personnage(i, j);
+                } else if (c== SORTIE) {
+                    if (laby.sortie != null) {
+                        throw new FichierIncorrectException("plusieurs sorties");
+                    }
+                    laby.sortie=new Sortie(i, j);
+                } else if (c != VIDE) {
+                    throw new FichierIncorrectException("caractere inconnu <" + c + ">");
                 }
             }
         }
 
-        // Vérification de la présence du personnage et de la sortie
-        if (personnage == null) {
+        if (laby.personnage==null) {
             throw new FichierIncorrectException("personnage inconnu");
         }
-        if (sortie == null) {
+
+        if (laby.sortie==null) {
             throw new FichierIncorrectException("sortie inconnue");
         }
 
-        // Création et retour du labyrinthe
-        Labyrinthe labyrinthe = new Labyrinthe();
-        labyrinthe.murs = murs;
-        labyrinthe.personnage = personnage;
-        labyrinthe.sortie = sortie;
-        return labyrinthe;
+        bf.close();
+        return laby;
     }
-
 }
