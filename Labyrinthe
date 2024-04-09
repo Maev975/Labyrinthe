@@ -188,7 +188,19 @@ class Labyrinthe{
         return laby;
     }
 
-public boolean[][] getMurs() {
+
+    public void setMurs(boolean[][] murs) {
+        this.murs = murs;
+    }
+
+    public void setPersonnage(Personnage personnage) {
+        this.personnage = personnage;
+    }
+
+    public void setSortie(Sortie sortie) {
+        this.sortie = sortie;
+    }
+    public boolean[][] getMurs() {
         return murs;
     }
 
