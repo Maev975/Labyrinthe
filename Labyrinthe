@@ -2,6 +2,8 @@
  * Squelette de classe labyrinthe
  */
 
+
+
 import java.io.*;
 import java.io.IOException;
 
@@ -21,6 +23,13 @@ class Labyrinthe{
     private boolean[][] murs;
     private Personnage personnage;
     private Sortie sortie;
+
+    /**
+     * Methde qui décrit le contenu de la case
+     * @param x
+     * @param y
+     * @return
+     */
     char getChar(int x, int y) {
         char res;
         if (personnage.getX()==x && personnage.getY()==y){
@@ -35,6 +44,14 @@ class Labyrinthe{
         return res;
     }
 
+    /**
+     * Methode qui retourne les coordonnees de la case suivante
+     * @param x
+     * @param y
+     * @param action
+     * @return
+     * @throws ActionInconnueException
+     */
     static int[] getSuivant(int x, int y, String action) throws ActionInconnueException {
         int[] suiv = null;
         if (action.equals(HAUT)) {
@@ -51,6 +68,11 @@ class Labyrinthe{
         return suiv;
     }
 
+    /**
+     *Methode pour deplacer le perso
+     * @param action
+     * @throws ActionInconnueException
+     */
     void deplacerPerso(String action) throws ActionInconnueException {
         int[] suivant;
         try {
@@ -77,10 +99,10 @@ class Labyrinthe{
         }
     }
 
-
-
-
-
+    /**
+     * methode qui retourne l'etat du labyrinthe
+     * @return s
+     */
     public String toString() {
         String s = "";
 
@@ -94,7 +116,10 @@ class Labyrinthe{
     }
 
 
-
+    /**
+     * methode qui permet d'arreter la jeu
+     * @return res
+     */
     public boolean etreFini() {
         boolean res;
         if (personnage.getX() == sortie.getX() && personnage.getY() == sortie.getY()) {
@@ -105,7 +130,13 @@ class Labyrinthe{
         return res;
     }
 
-
+    /**
+     * Methode qui permet de charger le labyrinthe
+     * @param nom
+     * @return laby
+     * @throws IOException
+     * @throws FichierIncorrectException
+     */
 
     public static Labyrinthe chargerLabyrinthe(String nom) throws IOException, FichierIncorrectException {
         FileReader fr = new FileReader(nom);
