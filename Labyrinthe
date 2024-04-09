@@ -6,9 +6,6 @@ import java.io.*;
 import java.io.IOException;
 
 
-import java.io.IOException;
-
-
 class Labyrinthe{
 
     static final char MUR = 'X';
@@ -109,50 +106,65 @@ class Labyrinthe{
 
 
 
-    public static Labyrinthe chargerLabyrinthe(String nom) throws IOException {
+    public static Labyrinthe chargerLabyrinthe(String nom) throws IOException, FichierIncorrectException {
         BufferedReader reader = new BufferedReader(new FileReader(nom));
-        String ligne;
-        int numL = 0;
-        int numC = 0;
-        boolean[][] murs = null;
+
+        // Lecture du nombre de lignes et de colonnes du labyrinthe
+        int numLignes = Integer.parseInt(reader.readLine());
+        int numColonnes = Integer.parseInt(reader.readLine());
+
+        // Initialisation des attributs du labyrinthe
+        boolean[][] murs = new boolean[numLignes][numColonnes];
         Personnage personnage = null;
         Sortie sortie = null;
 
-
-        while ((ligne = reader.readLine()) != null) {
-            numL++;
-            numC = ligne.length();
-        }
-        reader.close();
-
-
-        reader = new BufferedReader(new FileReader(nom));
-
-
-        murs = new boolean[numL][numC];
-
-
-        for (int i = 0; (ligne = reader.readLine()) != null; i++) {
-            for (int j = 0; j < numC; j++) {
-                char symbol = ligne.charAt(j);
-                if (symbol == MUR) {
-                    murs[i][j] = true;
-                } else if (symbol == PJ) {
-                    personnage = new Personnage(i, j);
-                } else if (symbol == SORTIE) {
-                    sortie = new Sortie(i, j);
+        // Lecture du descriptif du labyrinthe
+        for (int i = 0; i < numLignes; i++) {
+            String line = reader.readLine();
+            if (line == null || line.length() != numColonnes) {
+                throw new FichierIncorrectException("nbColonnes ne correspond pas");
+            }
+            for (int j = 0; j < numColonnes; j++) {
+                char symbole = line.charAt(j);
+                switch (symbole) {
+                    case MUR:
+                        murs[i][j] = true;
+                        break;
+                    case PJ:
+                        if (personnage != null) {
+                            throw new FichierIncorrectException("plusieurs personnages");
+                        }
+                        personnage = new Personnage(i, j);
+                        break;
+                    case SORTIE:
+                        if (sortie != null) {
+                            throw new FichierIncorrectException("plusieurs sorties");
+                        }
+                        sortie = new Sortie(i, j);
+                        break;
+                    case VIDE:
+                        // Aucune action nécessaire
+                        break;
+                    default:
+                        throw new FichierIncorrectException("caractere inconnu <" + symbole + ">");
                 }
             }
         }
-        reader.close();
 
+        // Vérification de la présence du personnage et de la sortie
+        if (personnage == null) {
+            throw new FichierIncorrectException("personnage inconnu");
+        }
+        if (sortie == null) {
+            throw new FichierIncorrectException("sortie inconnue");
+        }
 
+        // Création et retour du labyrinthe
         Labyrinthe labyrinthe = new Labyrinthe();
         labyrinthe.murs = murs;
         labyrinthe.personnage = personnage;
         labyrinthe.sortie = sortie;
         return labyrinthe;
     }
-
 
 }
