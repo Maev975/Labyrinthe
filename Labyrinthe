@@ -192,12 +192,10 @@ public boolean[][] getMurs() {
         return murs;
     }
 
-    // Getter pour l'attribut personnage
     public Personnage getPersonnage() {
         return personnage;
     }
 
-    // Getter pour l'attribut sortie
     public Sortie getSortie() {
         return sortie;
     }
