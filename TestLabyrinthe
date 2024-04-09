@@ -1,0 +1,38 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import java.io.IOException;
+
+class TestLabyrinthe {
+
+    @Test
+    void testGetSuivant() {
+        try {
+            assertArrayEquals(new int[]{0, 1}, Labyrinthe.getSuivant(0, 0, Labyrinthe.DROITE));
+            assertArrayEquals(new int[]{1, 0}, Labyrinthe.getSuivant(0, 0, Labyrinthe.BAS));
+            assertArrayEquals(new int[]{0, 0}, Labyrinthe.getSuivant(1, 0, Labyrinthe.HAUT));
+            assertArrayEquals(new int[]{0, 0}, Labyrinthe.getSuivant(0, 1, Labyrinthe.GAUCHE));
+        } catch (ActionInconnueException e) {
+            fail("Une exception inattendue a été lancée");
+        }
+    }
+
+    @Test
+    public void testEtreFini() {
+        Labyrinthe labyrinthe = new Labyrinthe();
+        labyrinthe.setPersonnage(new Personnage(2, 2));
+        labyrinthe.setSortie(new Sortie(2, 2));
+
+        assertTrue(labyrinthe.etreFini());
+
+        labyrinthe.setPersonnage(new Personnage(0, 0));
+        assertFalse(labyrinthe.etreFini());
+    }
+
+    @Test
+    public void testChargerLabyrinthe() {
+        assertThrows(IOException.class, () -> {
+            Labyrinthe.chargerLabyrinthe("fichier_inexistant.txt");
+        });
+    }
+}
+
