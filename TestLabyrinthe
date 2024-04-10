@@ -4,26 +4,105 @@ import java.io.IOException;
 
 class TestLabyrinthe {
 
+
     @Test
-    void testGetSuivant() {
-        try {
-            assertArrayEquals(new int[]{0, 1}, Labyrinthe.getSuivant(0, 0, Labyrinthe.DROITE));
-            assertArrayEquals(new int[]{1, 0}, Labyrinthe.getSuivant(0, 0, Labyrinthe.BAS));
-            assertArrayEquals(new int[]{0, 0}, Labyrinthe.getSuivant(1, 0, Labyrinthe.HAUT));
-            assertArrayEquals(new int[]{0, 0}, Labyrinthe.getSuivant(0, 1, Labyrinthe.GAUCHE));
-        } catch (ActionInconnueException e) {
-            fail("Une exception inattendue a été lancée");
-        }
+    public void testGetChar() throws FichierIncorrectException, IOException {
+        // utilise laby1.txt fourni
+        Labyrinthe labyrinthe = Labyrinthe.chargerLabyrinthe("laby/laby1.txt");
+
+        assertEquals('P', labyrinthe.getChar(5, 5));
+        assertEquals('X', labyrinthe.getChar(0, 0));
+        assertEquals('.', labyrinthe.getChar(1, 2));
+        assertEquals('S', labyrinthe.getChar(2, 3));
     }
 
     @Test
+    void testGetSuivant() throws FichierIncorrectException, IOException, ActionInconnueException {
+        // utilise laby1.txt fourni
+        Labyrinthe labyrinthe = Labyrinthe.chargerLabyrinthe("laby/laby1.txt");
+
+        int xTest = 1;
+        int yTest = 1;
+        //test Suivant droite
+        int [] testD = Labyrinthe.getSuivant(xTest, yTest, Labyrinthe.DROITE);
+        assertArrayEquals(new int[]{1, 2}, testD);
+        //test Suivant gauche
+        int [] testG = Labyrinthe.getSuivant(xTest, yTest, Labyrinthe.GAUCHE);
+        assertArrayEquals(new int[]{1, 0}, testG);
+        //test Suivant haut
+        int [] testH = Labyrinthe.getSuivant(xTest, yTest, Labyrinthe.HAUT);
+        assertArrayEquals(new int[]{0, 1}, testH);
+        //test Suivant bas
+        int [] testB = Labyrinthe.getSuivant(xTest, yTest, Labyrinthe.BAS);
+        assertArrayEquals(new int[]{2, 1}, testB);
+
+    }
+
+    @Test
+    public void testDeplacerPerso() throws FichierIncorrectException, IOException, ActionInconnueException {
+        // utilise laby1.txt fourni
+        Labyrinthe labyrinthe = Labyrinthe.chargerLabyrinthe("laby/laby1.txt");
+        //position de depart
+        assertEquals(5, labyrinthe.getPersonnage().getX());
+        assertEquals(5, labyrinthe.getPersonnage().getY());
+
+        // Deplacement vers le bas
+        labyrinthe.deplacerPerso("bas");
+        assertEquals(5, labyrinthe.getPersonnage().getX());
+        assertEquals(5, labyrinthe.getPersonnage().getY());
+
+        // Deplacement vers la droite
+        labyrinthe.deplacerPerso("droite");
+        assertEquals(5, labyrinthe.getPersonnage().getX());
+        assertEquals(8, labyrinthe.getPersonnage().getY());
+
+        // Deplacement vers la haut
+        labyrinthe.deplacerPerso("haut");
+        assertEquals(1, labyrinthe.getPersonnage().getX());
+        assertEquals(8, labyrinthe.getPersonnage().getY());
+
+        // Deplacement vers la droite
+        labyrinthe.deplacerPerso("gauche");
+        assertEquals(1, labyrinthe.getPersonnage().getX());
+        assertEquals(8, labyrinthe.getPersonnage().getY());
+    }
+
+    @Test
+    public void testToString() throws FichierIncorrectException, IOException {
+        // utilise laby1.txt fourni
+        Labyrinthe labyrinthe = Labyrinthe.chargerLabyrinthe("laby/laby1.txt");
+
+        String testLab =
+                        "XXXXXXXXXX" + "\n" +
+                        "X.....XX.X" + "\n" +
+                        "X.XS.....X" + "\n" +
+                        "X......X.X" + "\n" +
+                        "X........X" + "\n" +
+                        "X..XXP...X" + "\n" +
+                        "XXXXXXXXXX";
+
+        String labyS = labyrinthe.toString();
+
+        System.out.println("Laby obtenu :");
+        System.out.println(labyS);
+        System.out.println("Laby attendu :");
+        System.out.println(testLab);
+
+        assertEquals(testLab, labyS);
+    }
+
+
+    @Test
     public void testEtreFini() {
+        //on crée un labyrinthe et on met directement le personnage a la sortie
         Labyrinthe labyrinthe = new Labyrinthe();
         labyrinthe.setPersonnage(new Personnage(2, 2));
         labyrinthe.setSortie(new Sortie(2, 2));
 
+        //on verifie si estreFini est vrai
         assertTrue(labyrinthe.etreFini());
 
+        //on verifie si etreFini est faux
         labyrinthe.setPersonnage(new Personnage(0, 0));
         assertFalse(labyrinthe.etreFini());
     }
@@ -35,4 +114,3 @@ class TestLabyrinthe {
         });
     }
 }
-
