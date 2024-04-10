@@ -1,0 +1,44 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Paths;
+
+public class MainLaby {
+
+    public static void main(String[] args) {
+        if (args.length != 1) {
+            System.out.println("ohhhhh il faut qu'un argument !");
+            return;
+        }
+
+        String nomFichier = "../laby/" + args[0];
+        System.out.println(nomFichier);
+        try {
+            Labyrinthe labyrinthe = Labyrinthe.chargerLabyrinthe(nomFichier);
+            BufferedReader reader = new BufferedReader(new java.io.InputStreamReader(System.in));
+
+            while (labyrinthe.etreFini()==false) {
+                System.out.println(labyrinthe);
+                System.out.println("Entrez une action (haut, bas, gauche, droite, exit) : ");
+                String action = reader.readLine();
+
+                if (action.equals("exit")) {
+                    System.out.println("Jeu arrêté.");
+                    return;
+                }
+
+                try {
+                    labyrinthe.deplacerPerso(action);
+                } catch (ActionInconnueException e) {
+                    System.out.println("Action inconnue : " + action);
+                }
+            }
+
+            System.out.println("Félicitations, vous avez terminé le labyrinthe !");
+        } catch (IOException e) {
+            System.out.println("Erreur lors de la lecture du fichier : " + e.getMessage());
+        } catch (FichierIncorrectException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+    }
+}
