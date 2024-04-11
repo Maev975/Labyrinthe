@@ -27,3 +27,4 @@ X........X
 X..XXP...X
 XXXXXXXXXX"
 Nous supposons aussi que le problème pourrait être lié aux "\n" que nous avons utilisés pour revenir à la ligne, qui sont présents dans le test mais pas dans le fichier .txt.
+Pour certains des tests, comme les attribues sont en privé, nous avons du rajouter les méthodes setPersonnage, setMurs , setSortie, getPersonnage, getMurs et getSortie, sans eux, il était impossible de lancer les tests puisqu'ils n'avaient pas accès aux attriubes. 
